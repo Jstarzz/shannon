@@ -75,7 +75,7 @@ Sample penetration test reports from intentionally vulnerable applications, prod
 
 - **Docker**: required for the worker container.
 - **Node.js 18+**: required for the recommended `npx` workflow.
-- **AI provider credentials**: Shannon runs on Anthropic, OpenAI, xAI, AWS Bedrock, [any other provider](docs/ai-providers.md#any-other-provider) in the harness catalogue, and any endpoint that speaks the Anthropic Messages API or the OpenAI Chat Completions API through a [custom base URL](docs/ai-providers.md#custom-base-url). You bring your own key, and Keygraph never proxies your model traffic. Shannon is provider-agnostic; Claude models are the best-supported option, because Shannon's evaluations, internal testing, and agent harness are tuned for them. See [AI providers](docs/ai-providers.md#suggested-models) for suggested model IDs.
+- **AI provider credentials**: Shannon runs on Anthropic, OpenAI, xAI, AWS Bedrock, [any other provider](docs/ai-providers.md#any-other-provider) in the harness catalogue, and any endpoint that speaks the Anthropic Messages API or the OpenAI Chat Completions API through a [custom base URL](docs/ai-providers.md#custom-base-url). You bring your own key, and Keygraph never proxies your model traffic. Shannon is provider-agnostic. See [AI providers](docs/ai-providers.md#suggested-models) for suggested model IDs.
 - **Cyber safeguards cleared with your provider**: Anthropic and OpenAI apply real-time safeguards to cyber-security workloads, which can interrupt a scan mid-run. Complete their guidance for legitimate security testers before your first run - see [AI providers](docs/ai-providers.md#cyber-safeguards-do-this-before-your-first-scan).
 
 ### Run Shannon
@@ -312,7 +312,7 @@ Important limitations:
 
 - Shannon Open Source focuses on actively exploitable issues such as Injection, XSS, SSRF, Broken Authentication, and Broken Authorization. Broader static-analysis coverage, including vulnerable dependencies and insecure configurations, is delivered through the Keygraph platform.
 - Findings still require human review. LLM-generated reports can contain weakly supported or incorrect details.
-- Anthropic, OpenAI, xAI, and AWS Bedrock are built-in providers, and any Anthropic Messages API or OpenAI Chat Completions API endpoint works through a custom base URL. Claude models remain the best-supported option: Shannon's evaluations, internal testing, and agent harness are tuned for them, and other models may not follow Shannon's instructions or tool-use constraints as reliably.
+- Anthropic, OpenAI, xAI, and AWS Bedrock are built-in providers, and any Anthropic Messages API or OpenAI Chat Completions API endpoint works through a custom base URL. Model capability varies, and a model that does not follow Shannon's instructions or tool-use constraints reliably will produce weaker results.
 - A full run can take roughly 1 to 1.5 hours and may incur LLM API costs depending on model pricing and application complexity.
 - Do not scan untrusted or adversarial codebases. AI-powered tools that read source code can be exposed to prompt injection.
 
