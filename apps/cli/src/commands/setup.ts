@@ -71,7 +71,7 @@ export async function setup(): Promise<void> {
   const selected = await p.select({
     message: 'Select your AI provider',
     options: [
-      { value: 'anthropic' as const, label: 'Anthropic', hint: 'Claude models - recommended' },
+      { value: 'anthropic' as const, label: 'Anthropic', hint: 'Claude models' },
       { value: 'openai' as const, label: 'OpenAI', hint: 'GPT models' },
       { value: 'xai' as const, label: 'xAI', hint: 'Grok models' },
       { value: 'amazon-bedrock' as const, label: 'AWS Bedrock', hint: 'Claude models via AWS' },
