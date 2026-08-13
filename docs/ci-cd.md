@@ -62,7 +62,7 @@ report:
   sarif: "true"
 ```
 
-SARIF requires an exploitative run, which is the default. An analysis-only run (`exploit: "false"`) rates findings by confidence rather than severity and produces no SARIF log.
+SARIF requires an exploitative run, which is the default. Shannon does not write a SARIF log for analysis-only runs (`exploit: "false"`).
 
 Each finding becomes one SARIF result, filed under a rule per vulnerability class (`shannon/injection`, `shannon/xss`, `shannon/auth`, `shannon/authz`, `shannon/ssrf`) and tagged with its OWASP Top Ten 2025 category. Severity maps onto SARIF's three levels: `critical` and `high` become `error`, `medium` becomes `warning`, everything else becomes `note`.
 
