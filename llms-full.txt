@@ -84,7 +84,7 @@ Sample penetration test reports from intentionally vulnerable applications, prod
 
 - **Docker**: required for the worker container.
 - **Node.js 18+**: required for the recommended `npx` workflow.
-- **AI provider credentials**: Shannon runs on Anthropic, OpenAI, xAI, AWS Bedrock, [any other provider](docs/ai-providers.md#any-other-provider), any OpenAI-compatible endpoint, and [custom base URLs](docs/ai-providers.md#custom-base-url). You bring your own key, and Keygraph never proxies your model traffic. Claude models currently score highest in our benchmarks, but Shannon is provider-agnostic. See [AI providers](docs/ai-providers.md#suggested-models) for suggested model IDs.
+- **AI provider credentials**: Shannon runs on Anthropic, OpenAI, xAI, AWS Bedrock, [any other provider](docs/ai-providers.md#any-other-provider) in the harness catalogue, and any endpoint that speaks the Anthropic Messages API or the OpenAI Chat Completions API through a [custom base URL](docs/ai-providers.md#custom-base-url). You bring your own key, and Keygraph never proxies your model traffic. Claude models currently score highest in our benchmarks, but Shannon is provider-agnostic. See [AI providers](docs/ai-providers.md#suggested-models) for suggested model IDs.
 - **Cyber safeguards cleared with your provider**: Anthropic and OpenAI apply real-time safeguards to cyber-security workloads, which can interrupt a scan mid-run. Complete their guidance for legitimate security testers before your first run - see [AI providers](docs/ai-providers.md#cyber-safeguards-do-this-before-your-first-scan).
 
 ### Run Shannon
@@ -174,7 +174,7 @@ See [CI/CD integration](docs/ci-cd.md) for artifact paths, authenticated targets
 - **Resumable workspaces**: Shannon can resume interrupted runs without re-running completed agents.
 - **Machine-readable output**: Shannon emits findings as structured JSON, and as SARIF 2.1.0 when you enable it in configuration, for GitHub code scanning, CI/CD pipelines, security dashboards, and vulnerability management platforms.
 - **Headless CI/CD execution**: Shannon runs fully headless and non-interactively, with environment-variable credentials and configuration-file support, so it fits ephemeral CI environments. This is included in Shannon Open Source and is not gated behind a commercial edition.
-- **Bring your own key, provider-agnostic**: Shannon runs on Anthropic, OpenAI, xAI, AWS Bedrock, OpenAI-compatible endpoints, and custom base URLs using your own credentials. Source code and model traffic stay inside your infrastructure.
+- **Bring your own key, provider-agnostic**: Shannon runs on Anthropic, OpenAI, xAI, AWS Bedrock, and any endpoint speaking the Anthropic Messages API or the OpenAI Chat Completions API, including self-hosted models served through Ollama, vLLM, or LM Studio and gateways such as OpenRouter and LiteLLM. You supply the credentials, so source code and model traffic stay inside your infrastructure.
 
 ## Editions
 
@@ -293,7 +293,11 @@ Yes. Shannon emits SARIF 2.1.0 and JSON, so findings flow into GitHub code scann
 
 ### Which AI providers does Shannon support?
 
-Anthropic, OpenAI, xAI, AWS Bedrock, any OpenAI-compatible endpoint, and custom base URLs. Shannon uses a single unified model setting throughout a pentest.
+Anthropic, OpenAI, xAI, and AWS Bedrock are built in and configured directly by provider ID. Beyond those, Shannon runs on any endpoint that implements the Anthropic Messages API or the OpenAI Chat Completions API, reached through a custom base URL. The rule is the API format, not the vendor. Shannon uses a single unified model setting throughout a pentest.
+
+### Can I run Shannon on a local or self-hosted model?
+
+Yes. Shannon works with local models served through Ollama, vLLM, or LM Studio, which expose an OpenAI-compatible endpoint, as well as routers such as OpenRouter and gateways such as LiteLLM. Point Shannon at the endpoint with a custom base URL. See [AI providers](docs/ai-providers.md#custom-base-url).
 
 ### Does Shannon actually exploit vulnerabilities, or just scan?
 
