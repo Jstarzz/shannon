@@ -208,17 +208,7 @@ Use these guides for operational detail:
 
 ## Continuous Integration
 
-Shannon runs headlessly in CI/CD pipelines and emits SARIF 2.1.0, the OASIS standard format for static analysis results, which code scanning services, vulnerability management platforms, and security dashboards ingest directly. The example below uses GitHub Actions, but nothing about the output is GitHub-specific.
-
-Enable SARIF in your configuration file:
-
-```yaml
-# shannon.yaml
-report:
-  sarif: "true"
-```
-
-Then run the scan from your pipeline:
+Shannon runs fully headless and non-interactively, so it fits ephemeral CI environments. Credentials are read from environment variables, so no interactive `setup` step is required. The example below uses GitHub Actions, but nothing about the run is GitHub-specific.
 
 ```yaml
 name: Shannon Pentest
@@ -227,9 +217,6 @@ on: [pull_request]
 jobs:
   pentest:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
     steps:
       - uses: actions/checkout@v4
 
@@ -238,7 +225,6 @@ jobs:
           npx @keygraph/shannon start \
             -u ${{ vars.TARGET_URL }} \
             -r . \
-            -c shannon.yaml \
             -w ci-${{ github.run_id }} \
             -o ./shannon-results
 
@@ -248,17 +234,18 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
-      - name: Upload results
-        uses: github/codeql-action/upload-sarif@v3
+      - name: Upload report
+        uses: actions/upload-artifact@v4
         with:
-          sarif_file: ./shannon-results/report.sarif
+          name: shannon-report
+          path: ./shannon-results/
 ```
 
-Credentials are read from environment variables, so no interactive `setup` step is required. `-o` copies the run's deliverables, including `report.sarif` and `report.json`, to a path the rest of your workflow can read.
+`-o` copies the run's deliverables, including the report and the structured findings in `report.json`, to a path the rest of your workflow can read.
 
-Because Shannon reports only vulnerabilities it has actually exploited, everything that reaches your scanning service is a proven finding rather than a speculative alert. Set `report.min_severity` in your configuration file to drop findings below a severity threshold, then gate merges on those results or on your own check over `report.json`.
+Because Shannon reports only vulnerabilities it has actually exploited, what lands in your pipeline is proven rather than speculative. Set `report.min_severity` in a configuration file passed with `-c` to drop findings below a severity threshold, then gate merges on your own check over `report.json`.
 
-See [CI/CD integration](docs/ci-cd.md) for artifact paths, authenticated targets, and cost and runtime notes.
+See [CI/CD integration](docs/ci-cd.md) for artifact paths, SARIF output, authenticated targets, and cost and runtime notes.
 
 ## Common Questions
 
@@ -276,7 +263,7 @@ Yes, always. You supply your own AI provider credentials in every deployment, op
 
 ### Can Shannon run in CI/CD?
 
-Yes. Shannon runs fully headless and non-interactively, with environment-variable credentials, configuration-file support, and SARIF output. See [Continuous Integration](#continuous-integration). This is part of Shannon Open Source.
+Yes. Shannon runs fully headless and non-interactively, with environment-variable credentials and configuration-file support. See [Continuous Integration](#continuous-integration) for a worked example, and [CI/CD integration](docs/ci-cd.md) for SARIF output and artifact paths. This is part of Shannon Open Source.
 
 ### Does Shannon output SARIF?
 
