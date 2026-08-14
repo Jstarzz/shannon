@@ -54,6 +54,8 @@ Pass an explicit workspace name with `-w` so the `logs` command has a determinis
 
 ## SARIF Output
 
+SARIF 2.1.0 is the OASIS standard interchange format for static analysis results. Any tool that reads SARIF ingests `report.sarif` unchanged, so the GitHub Actions example below is one consumer among many, not a requirement.
+
 SARIF is opt-in. Enable it in a configuration file:
 
 ```yaml

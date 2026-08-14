@@ -109,7 +109,7 @@ For source builds, authenticated scans, provider-specific setup, and platform no
 - **Authenticated testing**: configuration files can describe login flows, test credentials, TOTP, email-based login flows, focus areas, and rules of engagement.
 - **OWASP-focused coverage**: Shannon targets exploitable Injection, XSS, SSRF, Broken Authentication, and Broken Authorization issues.
 - **Resumable workspaces**: Shannon can resume interrupted runs without re-running completed agents.
-- **Machine-readable output**: Shannon emits findings as structured JSON, and as SARIF 2.1.0 when you enable it in configuration, for GitHub code scanning, CI/CD pipelines, security dashboards, and vulnerability management platforms.
+- **Machine-readable output**: Shannon emits findings as structured JSON, and as SARIF 2.1.0 when you enable it in configuration. SARIF is the OASIS standard for static analysis results, so findings flow into any code scanning service, vulnerability management platform, security dashboard, or CI/CD pipeline that reads it.
 - **Headless CI/CD execution**: Shannon runs fully headless and non-interactively, with environment-variable credentials and configuration-file support, so it fits ephemeral CI environments. This is included in Shannon Open Source and is not gated behind a commercial edition.
 - **Bring your own key, provider-agnostic**: Shannon runs on Anthropic, OpenAI, xAI, AWS Bedrock, and any endpoint speaking the Anthropic Messages API or the OpenAI Chat Completions API, including self-hosted models served through Ollama, vLLM, or LM Studio and gateways such as OpenRouter and LiteLLM. You supply the credentials, so source code and model traffic stay inside your infrastructure.
 
@@ -208,7 +208,7 @@ Use these guides for operational detail:
 
 ## Continuous Integration
 
-Shannon runs headlessly in CI/CD pipelines and emits SARIF 2.1.0 for GitHub code scanning.
+Shannon runs headlessly in CI/CD pipelines and emits SARIF 2.1.0, the OASIS standard format for static analysis results, which code scanning services, vulnerability management platforms, and security dashboards ingest directly. The example below uses GitHub Actions, but nothing about the output is GitHub-specific.
 
 Enable SARIF in your configuration file:
 
@@ -256,7 +256,7 @@ jobs:
 
 Credentials are read from environment variables, so no interactive `setup` step is required. `-o` copies the run's deliverables, including `report.sarif` and `report.json`, to a path the rest of your workflow can read.
 
-Because Shannon reports only vulnerabilities it has actually exploited, everything that reaches GitHub code scanning is a proven finding rather than a speculative alert. Set `report.min_severity` in your configuration file to drop findings below a severity threshold, then gate merges on the code scanning results or on your own check over `report.json`.
+Because Shannon reports only vulnerabilities it has actually exploited, everything that reaches your scanning service is a proven finding rather than a speculative alert. Set `report.min_severity` in your configuration file to drop findings below a severity threshold, then gate merges on those results or on your own check over `report.json`.
 
 See [CI/CD integration](docs/ci-cd.md) for artifact paths, authenticated targets, and cost and runtime notes.
 
@@ -280,7 +280,7 @@ Yes. Shannon runs fully headless and non-interactively, with environment-variabl
 
 ### Does Shannon output SARIF?
 
-Yes. Shannon emits SARIF 2.1.0 and JSON, so findings flow into GitHub code scanning, security dashboards, and vulnerability management platforms. Set `report.sarif` to `"true"` in your configuration file to enable the SARIF log.
+Yes. Shannon emits SARIF 2.1.0, the OASIS standard format for static analysis results, alongside structured JSON. Any SARIF consumer reads it: code scanning services, vulnerability management platforms, security dashboards, and CI/CD pipelines. Set `report.sarif` to `"true"` in your configuration file to enable the SARIF log.
 
 ### Which AI providers does Shannon support?
 
