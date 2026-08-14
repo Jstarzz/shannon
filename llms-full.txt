@@ -39,11 +39,11 @@ It analyzes your source code, identifies attack paths, and executes real exploit
 - [What is Shannon?](#what-is-shannon)
 - [Shannon in Action](#shannon-in-action)
 - [Quick Start](#quick-start)
-- [Continuous Integration](#continuous-integration)
 - [Key Capabilities](#key-capabilities)
 - [Editions](#editions)
 - [Architecture](#architecture)
 - [Documentation](#documentation)
+- [Continuous Integration](#continuous-integration)
 - [Common Questions](#common-questions)
 - [Safety, Scope, and Limitations](#safety-scope-and-limitations)
 - [License](#license)
@@ -109,60 +109,6 @@ For source builds, authenticated scans, provider-specific setup, and platform no
 >
 > - **OpenAI Codex:** The latest version of Shannon supports ChatGPT Plus and Pro subscriptions. Follow the [OpenAI Codex subscription setup guide](docs/ai-providers.md#openai-codex-chatgpt-pluspro-subscription) to get started.
 > - **Claude Code:** The latest version of Shannon does not support Claude Code subscriptions. Follow the [Claude Code subscription setup guide](docs/ai-providers.md#claude-code-subscription) to use version `1.9.0`, which is the final release built on the Claude Agent SDK.
-
-## Continuous Integration
-
-Shannon runs headlessly in CI/CD pipelines and emits SARIF 2.1.0 for GitHub code scanning.
-
-Enable SARIF in your configuration file:
-
-```yaml
-# shannon.yaml
-report:
-  sarif: "true"
-```
-
-Then run the scan from your pipeline:
-
-```yaml
-name: Shannon Pentest
-on: [pull_request]
-
-jobs:
-  pentest:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Run Shannon
-        run: |
-          npx @keygraph/shannon start \
-            -u ${{ vars.TARGET_URL }} \
-            -r . \
-            -c shannon.yaml \
-            -w ci-${{ github.run_id }} \
-            -o ./shannon-results
-
-          # `start` launches the scan in the background. `logs` streams it and
-          # returns once the scan reports COMPLETED or FAILED.
-          npx @keygraph/shannon logs ci-${{ github.run_id }}
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-
-      - name: Upload results
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: ./shannon-results/report.sarif
-```
-
-Credentials are read from environment variables, so no interactive `setup` step is required. `-o` copies the run's deliverables, including `report.sarif` and `report.json`, to a path the rest of your workflow can read.
-
-Because Shannon reports only vulnerabilities it has actually exploited, everything that reaches GitHub code scanning is a proven finding rather than a speculative alert. Set `report.min_severity` in your configuration file to drop findings below a severity threshold, then gate merges on the code scanning results or on your own check over `report.json`.
-
-See [CI/CD integration](docs/ci-cd.md) for artifact paths, authenticated targets, and cost and runtime notes.
 
 ## Key Capabilities
 
@@ -268,6 +214,60 @@ Use these guides for operational detail:
 | [Coverage and roadmap](docs/coverage-roadmap.md) | Current vulnerability coverage and planned work. |
 | [CI/CD integration](docs/ci-cd.md) | Headless execution, SARIF output, artifact paths, and GitHub Actions examples. |
 | [Keygraph platform](docs/keygraph-platform.md) | The continuous, agentic pentesting platform: code analysis, black-box and white-box testing, finding management, remediation, verification, and enterprise deployment. |
+
+## Continuous Integration
+
+Shannon runs headlessly in CI/CD pipelines and emits SARIF 2.1.0 for GitHub code scanning.
+
+Enable SARIF in your configuration file:
+
+```yaml
+# shannon.yaml
+report:
+  sarif: "true"
+```
+
+Then run the scan from your pipeline:
+
+```yaml
+name: Shannon Pentest
+on: [pull_request]
+
+jobs:
+  pentest:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Shannon
+        run: |
+          npx @keygraph/shannon start \
+            -u ${{ vars.TARGET_URL }} \
+            -r . \
+            -c shannon.yaml \
+            -w ci-${{ github.run_id }} \
+            -o ./shannon-results
+
+          # `start` launches the scan in the background. `logs` streams it and
+          # returns once the scan reports COMPLETED or FAILED.
+          npx @keygraph/shannon logs ci-${{ github.run_id }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Upload results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ./shannon-results/report.sarif
+```
+
+Credentials are read from environment variables, so no interactive `setup` step is required. `-o` copies the run's deliverables, including `report.sarif` and `report.json`, to a path the rest of your workflow can read.
+
+Because Shannon reports only vulnerabilities it has actually exploited, everything that reaches GitHub code scanning is a proven finding rather than a speculative alert. Set `report.min_severity` in your configuration file to drop findings below a severity threshold, then gate merges on the code scanning results or on your own check over `report.json`.
+
+See [CI/CD integration](docs/ci-cd.md) for artifact paths, authenticated targets, and cost and runtime notes.
 
 ## Common Questions
 
