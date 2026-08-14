@@ -303,10 +303,6 @@ Yes. Shannon works with local models served through Ollama, vLLM, or LM Studio, 
 
 Shannon executes real exploits. It reports a finding only when it has produced a working proof-of-concept, and discards hypotheses it cannot prove. It is a pentester, not a scanner.
 
-### What does the AGPL-3.0 license mean for my company?
-
-Running Shannon internally to test your own applications places no obligations on your code. The AGPL applies if you modify Shannon and offer it to third parties as a network service. If you want to embed Shannon in a commercial product, contact [shannon@keygraph.io](mailto:shannon@keygraph.io) about commercial licensing.
-
 ### Is Shannon free for startups and nonprofits?
 
 Shannon Open Source is free for everyone. In addition, the Keygraph Community Program gives eligible nonprofits and early-stage startups free access to the commercial Keygraph platform. See [keygraph.io](https://keygraph.io).
